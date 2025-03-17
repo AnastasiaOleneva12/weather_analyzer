@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import seaborn as sns
 import requests
 import plotly.express as px
 import time
@@ -95,13 +93,11 @@ if uploaded_file is not None:
 
     season = st.selectbox('Выберите сезон', anomalies_df['season'].unique())
     filtered_df = anomalies_df[anomalies_df['season'] == season]
-    fig3 = px.line(filtered_df, x='timestamp', y='temperature',
-                   title=f'Температура за сезон {season}',
-                   labels={'temperature': 'Температура', 'timestamp': 'Дата'})
-    anomalies = filtered_df[filtered_df['is_anomaly'] == 1]
-    fig3.add_scatter(x=anomalies['timestamp'], y=anomalies['temperature'],
-                     mode='markers', marker=dict(color='red', size=10), name='Аномалии')
-    fig3.update_layout(xaxis_title='Дата', yaxis_title='Температура', showlegend=True)
+    fig3 = px.scatter(filtered_df, x='timestamp', y='temperature', color='is_anomaly',
+                      color_discrete_map={False: 'blue', True: 'red'},
+                      title=f'Температура за сезон {season}')
+    fig3.update_traces(marker=dict(size=7, opacity=0.7))
+    fig3.update_layout(legend_title='Аномалия')
     st.plotly_chart(fig3)
 
 
